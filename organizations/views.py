@@ -181,13 +181,13 @@ class ObjectOwnershipView(APIView):
     def delete(self, request, pk):
 
         ownership_object = get_object_or_404(models.ObjectOwnership, id=pk)
-
+        print(ownership_object)
         try:
             org = models.Organization.objects.get(user=request.user.pk)
         except models.Organization.DoesNotExist:
             return Response({'message' : 'Organization Not foundes'}, status=status.HTTP_404_NOT_FOUND)
 
-        if ownership_object.organization.pk is not org.pk:
+        if ownership_object.organization.pk !=  org.pk:
             return Response({'message' : 'you can only delete your ownership'}, status=status.HTTP_403_FORBIDDEN)
 
         ownership_object.content_object.delete()

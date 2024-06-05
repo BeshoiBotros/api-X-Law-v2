@@ -36,7 +36,7 @@ class OwnershipSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.ObjectOwnership
-        fields = ['organization', 'object_id', 'content_type', 'organization_view', 'object_view', 'content_type_view']
+        fields = ['id','organization', 'object_id', 'content_type', 'organization_view', 'object_view', 'content_type_view']
         extra_kwargs = {
             'organization': {'write_only': True},
             'object_id': {'write_only': True},
