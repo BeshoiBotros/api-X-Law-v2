@@ -89,9 +89,9 @@ class ObjectOwnershipView(APIView):
 
     @swagger_auto_schema(method='get')
     def get(self, request, pk=None, organization_pk=None):
-        
+         
         if organization_pk:
-            organization = shortcuts.get_obj_by_kwargs(model=models.Organization, pk=organization_pk)
+            organization = get_object_or_404(models.Organization, id=organization_pk)
             queryset = models.ObjectOwnership.objects.filter(organization=organization)
             serializer = serializers.OwnershipSerializer(queryset, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
