@@ -8,6 +8,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from . import filters
 from drf_yasg.utils import swagger_auto_schema
+from users import models as users_models
+from users import serializers as users_serializers
 
 class CategoryView(APIView):
     permission_classes = [IsAuthenticated]
@@ -93,20 +95,17 @@ class SubCategoryView(APIView):
 
 
 class NewView(APIView):
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
     def get(self, request, pk=None):
         
         if pk:
             instance = shortcuts.object_is_exist(pk, models.New, "New not found")
-            
-            try:
-                user_profile = None
-            except:
-                return Response({'detail':'profile not found'}, status=status.HTTP_404_NOT_FOUND)
-            
-            serializer = serializers.NewSerializer(instance=instance)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            lawyer = instance.user
+            lawyer_profile = users_models.LawyerProfile.objects.get(lawyer=lawyer)
+            new_serializer = serializers.NewSerializer(instance=instance)
+            profile_serializer = users_serializers.LawyerProfileSerializer(instance=lawyer_profile)
+            return Response({'new' : new_serializer.data, 'profile' : profile_serializer.data}, status=status.HTTP_200_OK)
         
         queryset = models.New.objects.all()
         
@@ -115,9 +114,18 @@ class NewView(APIView):
         if filterset.is_valid():
             queryset = filterset.qs
 
-        serializer = serializers.NewSerializer(queryset, many=True)
+        response = []
+        for new in queryset:
+            
+            lawyer = new.user
+            lawyer_profile = users_models.LawyerProfile.objects.get(lawyer=lawyer)
 
-        return Response(serializer.data, status=status.HTTP_200_OK)
+            new_serializer = serializers.NewSerializer(new)
+            profile_serializer = users_serializers.LawyerProfileSerializer(lawyer_profile)
+            
+            response.append({'new' : new_serializer.data, 'profile' : profile_serializer.data})
+
+        return Response(response, status=status.HTTP_200_OK)
     
     @swagger_auto_schema(request_body=serializers.NewSerializer)
     def post(self, request):
