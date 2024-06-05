@@ -1,0 +1,89 @@
+{
+	"info": {
+		"_postman_id": "b059b12c-c28c-4541-bd86-87c9579723f1",
+		"name": "API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "23350831"
+	},
+	"item": [
+		{
+			"name": "train the model",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/yaml",
+						"type": "text"
+					},
+					{
+						"key": "Access-Control-Allow-Origin",
+						"value": "*",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "nlu:\r\n- intent: greet\r\n  examples: |\r\n    - مرحباو كيف حالك\r\n    - مرحبا\r\n    - كيف حالك\r\n    - اهلا وسهلا\r\n    - اهلا\r\n- intent: goodbye\r\n  examples: |\r\n    - الوداع\r\n    - مع السلامة\r\n    - سلام\r\n- intent: services\r\n  examples: |\r\n    - ما هي الخدمات الذي تقدمها\r\n    - اي خدمات لديك\r\n    - ما الذي يمكنك فعله\r\n- intent: thanks\r\n  examples: |\r\n    - شكرا\r\n    - شكرا لك\r\n    - العفو\r\n    - اشكرك\r\n- intent: service1\r\n  examples: |\r\n    - هل يمكنك مساعدتي في الخدمة الاولي ؟\r\n    - ما هي الخدمة الاولي ؟\r\n    - اخبرني عن الخدمة الاولي ؟\r\n- intent: service2\r\n  examples: |\r\n    - هل يمكنك مساعدتي في الخدمة الثانية ؟\r\n    - ما هي الخدمة الثانية ؟\r\n    - اخبرني عن الخدمة الثانية ؟\r\n- intent: ask_bot_name\r\n  examples: |\r\n    - هل لديك اسم ؟\r\n    - ما اسمك ؟\r\n\r\n- intent: say_name_to_bot\r\n  examples: |\r\n    - انا اسمي [احمد] (name)\r\n    - مرحبا انا اسمي [محمد] (name)\r\n    - مرحبا انا اسمي [بيشوي] (name)\r\n    - انا اسمي [علي] (name)\r\n\r\nintents:\r\n- greet\r\n- goodbye\r\n- services\r\n- thanks\r\n- service1\r\n- service2\r\n- say_name_to_bot\r\n- ask_bot_name\r\n\r\nentities:\r\n    - name\r\n\r\nslots:\r\n  name:\r\n    type: text\r\n    mappings:\r\n      - type: from_entity\r\n        entity: name\r\n\r\nresponses:\r\n  utter_greet:\r\n  - text: \"مرحباو كيف حالك ؟\"\r\n  utter_goodbye:\r\n  - text: \"الوداع\"\r\n  utter_thanks:\r\n  - text: \"علي الرحب والسعة\"\r\n  utter_service1:\r\n  - text: \"الخدمة الاولي عبارة عن ...\"\r\n  utter_service2:\r\n  - text: \"الخدمة الثانية عبارة عن ...\"\r\n  utter_ask_bot_name:\r\n  - text: \"مرحبا انا اسمي بوت1\"\r\n  utter_say_name_to_bot:\r\n  - text: \"مرحبا بك يا {name}, كيف حالك\"\r\n\r\n\r\nstories:\r\n- story: greet path\r\n  steps:\r\n  - intent: greet\r\n  - action: utter_greet\r\n- story: goodbye path\r\n  steps:\r\n  - intent: goodbye\r\n  - action: utter_goodbye\r\n- story: service one path\r\n  steps:\r\n  - intent: service1\r\n  - action: utter_service1\r\n- story: thanks path\r\n  steps:\r\n  - intent: thanks\r\n  - action: utter_thanks\r\n- story: service two path\r\n  steps:\r\n  - intent: service2\r\n  - action: utter_service2\r\n- story: ask bot name\r\n  steps:\r\n  - intent: ask_bot_name\r\n  - action: utter_ask_bot_name\r\n\r\n- story: say name to bot\r\n  steps:\r\n  - intent: say_name_to_bot\r\n  - action: utter_say_name_to_bot\r\n",
+					"options": {
+						"raw": {
+							"language": "text"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5005/model/train?force_training=true",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5005",
+					"path": [
+						"model",
+						"train"
+					],
+					"query": [
+						{
+							"key": "force_training",
+							"value": "true"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "test bot",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\t\"sender\": \"Sender\",\r\n\t\"message\": \"مرحبا انا اسمي بيشوي\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5005/webhooks/rest/webhook",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5005",
+					"path": [
+						"webhooks",
+						"rest",
+						"webhook"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
