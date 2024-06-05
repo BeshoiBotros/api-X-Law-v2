@@ -16,4 +16,7 @@ urlpatterns = [
     # payment method URLs
     # ...
 
+    # get  organization by owner
+    path('user-organization/', views.GetOrganizationByUser.as_view()),
+
 ]

@@ -212,3 +212,21 @@ class PaymentMethodView(APIView):
     def delete(self, request, pk):
         pass
 
+
+class GetOrganizationByUser(APIView):
+    
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        
+        user = request.user
+
+        try:
+            organization = models.Organization.objects.get(user=user)
+        except models.Organization.DoesNotExist:
+            return Response({'detail' : 'You do not have an Organization'}, status=status.HTTP_404_NOT_FOUND)
+        
+        serializer = serializers.OrganizationSerializer(instance=organization)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+        
